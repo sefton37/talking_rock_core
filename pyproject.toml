@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "talkingrock-core"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "httpx>=0.27.0,<1.0.0",
+  "pydantic>=2.8.0,<3.0.0",
+  "tenacity>=8.2.0,<10.0.0",
+  "keyring>=24.0.0,<26.0.0",
+  "secretstorage>=3.3.0,<4.0.0",
+  "cryptography>=42.0.0,<44.0.0",
+]
+
+[project.optional-dependencies]
+semantic = ["sentence-transformers>=3.0.0,<6.0.0"]
+sqlcipher = ["pysqlcipher3>=1.2.0,<2.0.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
