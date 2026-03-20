@@ -10,11 +10,11 @@ _CONFIGURED = False
 
 
 def configure_logging(*, log_path: Path | None = None) -> None:
-    """Configure ReOS logging.
+    """Configure Talking Rock logging.
 
     Local-first:
     - Logs to stderr for developer visibility.
-    - Logs to a rotating file under `.reos-data/` for later inspection.
+    - Logs to a rotating file under the configured data directory for later inspection.
 
     Safe to call multiple times; it will not duplicate handlers.
     """

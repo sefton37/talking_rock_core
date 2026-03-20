@@ -36,8 +36,8 @@ CLASSIFICATION_SYSTEM_PROMPT = """You are a REQUEST CLASSIFIER for a local AI as
 Classify the user's request into five dimensions:
 
 1. **destination** — Where does the output go?
-   - "stream": ephemeral display (conversations, answers, greetings, status info)
-   - "file": persistent storage (save, create, update notes/scenes/documents)
+   - "stream": ephemeral display (conversations, answers, analysis, summaries, drafted content)
+   - "file": persistent storage (save to disk, create/update a file or document)
    - "process": spawns/controls a system process (run, start, stop, install, kill)
 
 2. **consumer** — Who consumes the result?
@@ -46,8 +46,8 @@ Classify the user's request into five dimensions:
 
 3. **semantics** — What action does it take?
    - "read": retrieve or display existing data without side effects
-   - "interpret": analyze, explain, summarize, or converse (including greetings and small talk)
-   - "execute": perform a side-effecting action (create, delete, run, install)
+   - "interpret": analyze, explain, summarize, synthesize, draft, or converse
+   - "execute": perform a side-effecting action (create file, delete, run process, send)
 
 4. **domain** — What subject area does this relate to?
    - "calendar": schedule, events, appointments, meetings
@@ -72,9 +72,21 @@ Classify the user's request into five dimensions:
    - null: not applicable (e.g., greetings) or cannot determine
 
 CRITICAL RULES:
+- CONTENT GENERATION is "interpret", NOT "execute". Asking the assistant to
+  write, draft, summarize, or prepare a document is asking it to THINK AND
+  PRODUCE TEXT. It only becomes "execute" if they want it SAVED TO A FILE
+  or SENT somewhere.
+  "Write me a status doc" = stream/human/interpret (produce text).
+  "Save that to status.md" = file/human/execute (side effect: file creation).
 - Greetings ("good morning", "hello", "hi", "thanks"):
   stream/human/interpret, domain="conversation"
 - Questions ("what's X?", "show me Y") → stream/human/read
+- Meta/transparency questions about the assistant's reasoning or behavior:
+  stream/human/interpret, domain="feedback"
+- Emotional/reflective messages ("I feel overwhelmed", "I'm stressed"):
+  stream/human/interpret, domain="personal"
+- Prioritization/synthesis ("Who needs a response first?", "What should I focus on?"):
+  stream/human/interpret — these have CLEAR intent even when broad
 - Conversational / small talk:
   stream/human/interpret, domain="conversation"
 - "Save X to file" → file/human/execute
@@ -113,6 +125,18 @@ EXAMPLES (showing input → output JSON):
   {"destination":"stream","consumer":"human",
     "semantics":"interpret","confident":true,
     "domain":"personal","action_hint":"view"}
+"Write the RIVA status doc":
+  {"destination":"stream","consumer":"human","semantics":"interpret",
+    "confident":true,"domain":"knowledge","action_hint":null}
+"What context did you draw on?":
+  {"destination":"stream","consumer":"human","semantics":"interpret",
+    "confident":true,"domain":"feedback","action_hint":null}
+"I feel like I'm dropping balls everywhere":
+  {"destination":"stream","consumer":"human","semantics":"interpret",
+    "confident":true,"domain":"personal","action_hint":null}
+"Who needs a response more urgently?":
+  {"destination":"stream","consumer":"human","semantics":"interpret",
+    "confident":true,"domain":"contacts","action_hint":null}
 {corrections_block}
 Return ONLY a JSON object:
 {"destination":"...","consumer":"...","semantics":"...",

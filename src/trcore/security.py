@@ -1,4 +1,4 @@
-"""Security module for ReOS.
+"""Security module for Talking Rock.
 
 Provides centralized security functions for:
 - Input validation and sanitization

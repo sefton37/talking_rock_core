@@ -1,4 +1,4 @@
-"""Type definitions for ReOS.
+"""Type definitions for Talking Rock.
 
 This module provides TypedDict definitions for structured return types,
 improving type safety and IDE support across the codebase.

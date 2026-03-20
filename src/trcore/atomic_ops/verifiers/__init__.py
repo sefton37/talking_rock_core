@@ -19,6 +19,7 @@ from .behavioral import BehavioralVerifier
 from .safety import SafetyVerifier
 from .intent import IntentVerifier
 from .pipeline import VerificationPipeline
+from .directives import verification_directive, verification_directive_from_list
 
 __all__ = [
     "BaseVerifier",
@@ -29,4 +30,6 @@ __all__ = [
     "SafetyVerifier",
     "IntentVerifier",
     "VerificationPipeline",
+    "verification_directive",
+    "verification_directive_from_list",
 ]

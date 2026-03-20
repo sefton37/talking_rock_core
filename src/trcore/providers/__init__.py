@@ -54,6 +54,14 @@ from trcore.providers.factory import (
     AVAILABLE_PROVIDERS,
 )
 
+# Binary LLM judge
+from trcore.providers.quick_judge import (
+    quick_judge,
+    SAFETY_JUDGE_SYSTEM,
+    INTENT_JUDGE_SYSTEM,
+    SEMANTIC_JUDGE_SYSTEM,
+)
+
 # Secrets management
 from trcore.providers.secrets import (
     store_api_key,
@@ -85,6 +93,11 @@ __all__ = [
     "get_provider_info",
     "ProviderInfo",
     "AVAILABLE_PROVIDERS",
+    # Binary LLM judge
+    "quick_judge",
+    "SAFETY_JUDGE_SYSTEM",
+    "INTENT_JUDGE_SYSTEM",
+    "SEMANTIC_JUDGE_SYSTEM",
     # Secrets
     "store_api_key",
     "get_api_key",

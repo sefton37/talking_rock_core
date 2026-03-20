@@ -13,8 +13,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Service name for ReOS credentials in the keyring
-SERVICE_NAME = "com.reos.providers"
+# Service name for Talking Rock credentials in the keyring
+SERVICE_NAME = "com.talkingrock.providers"
+# Legacy service name kept for backward compatibility
+_LEGACY_SERVICE_NAME = "com.reos.providers"
 
 
 def store_api_key(provider: str, api_key: str) -> None:
@@ -52,7 +54,11 @@ def get_api_key(provider: str) -> str | None:
     try:
         import keyring
 
-        return keyring.get_password(SERVICE_NAME, provider)
+        value = keyring.get_password(SERVICE_NAME, provider)
+        if value is None:
+            # Check legacy service name for backward compatibility
+            value = keyring.get_password(_LEGACY_SERVICE_NAME, provider)
+        return value
     except ImportError:
         logger.warning("keyring library not installed")
         return None
@@ -116,7 +122,7 @@ def check_keyring_available() -> bool:
             return False
 
         # Try a test write/read/delete
-        test_key = "__reos_keyring_test__"
+        test_key = "__talkingrock_keyring_test__"
         test_value = "test_value"
         try:
             keyring.set_password(SERVICE_NAME, test_key, test_value)

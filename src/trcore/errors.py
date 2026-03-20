@@ -921,6 +921,32 @@ def error_response(exc: Exception) -> ErrorResponse:
 
 
 # =============================================================================
+# RPC Error (JSON-RPC protocol error)
+# =============================================================================
+
+
+class RpcError(Exception):
+    """JSON-RPC error with code, message, and optional data.
+
+    Separate from TalkingRockError — this is a protocol-level error for
+    JSON-RPC responses, not a domain error. Used by CCManager and any
+    component that speaks the JSON-RPC wire format.
+    """
+
+    def __init__(self, code: int, message: str, data: Any = None) -> None:
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.data = data
+
+    def to_dict(self) -> dict[str, Any]:
+        result: dict[str, Any] = {"code": self.code, "message": self.message}
+        if self.data is not None:
+            result["data"] = self.data
+        return result
+
+
+# =============================================================================
 # RPC Error Code Mapping
 # =============================================================================
 
@@ -952,6 +978,9 @@ ERROR_CODES: dict[type[TalkingRockError], int] = {
     AtomicOpError: -32052,
     CAIRNError: -32053,
 }
+
+# Note: RpcError is NOT in ERROR_CODES — it's a protocol error, not a domain error.
+# Use RpcError.code directly for JSON-RPC responses.
 
 
 def get_error_code(exc: TalkingRockError) -> int:

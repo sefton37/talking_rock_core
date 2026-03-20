@@ -19,7 +19,7 @@ from __future__ import annotations
 import logging
 import sqlite3
 
-from trcore import db_crypto
+from .. import db_crypto
 from dataclasses import dataclass
 from typing import Any, Optional, Protocol
 
@@ -137,6 +137,7 @@ class AtomicOpsProcessor:
             user_id=user_id,
             source_agent=source_agent,
             force_decomposition=force_decomposition,
+            memory_context=memory_context,
         )
 
         # Store all operations
